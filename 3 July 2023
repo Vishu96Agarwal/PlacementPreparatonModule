@@ -1,1 +1,17 @@
+# Leetcode Problem 217. Contains Duplicate
 
+class Solution {
+public:
+    bool containsDuplicate(vector<int>& arr) {
+        sort(arr.begin(),arr.end());
+        int j=0,cnt=0;
+        for(int i=0;i<arr.size()-1;i++){
+            if(arr[j]==arr[i+1])
+                return true;
+            else
+                j++;
+        }
+        
+        return false;
+    }
+};
