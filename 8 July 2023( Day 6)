@@ -1,1 +1,142 @@
+#Leetcode Problem 160. Intersection of Two Linked Lists
 
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        unordered_map<ListNode*,int>mpp;
+    for (auto p = headA ; p!=NULL ; p = p->next){
+        mpp[p]=p->val;
+    }
+    for (auto p = headB ; p!=NULL ; p = p->next){
+        if (mpp.find(p)!=mpp.end()) return p;
+    }
+    return NULL;
+    }
+};
+
+
+#Leetcode Problem 141. Linked List Cycle
+
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+	
+        if(head == NULL)
+            return false;
+        
+        ListNode *fast = head;
+        ListNode *slow = head;
+        
+        while(fast != NULL && fast ->next != NULL)
+        {
+            fast = fast->next->next;
+            slow = slow->next;
+            
+            if(fast == slow)
+                return true;
+        }
+        
+        return false;
+    }
+};
+
+
+#Leetcode Problem 25. Reverse Nodes in k-Group
+
+class Solution:
+    def reverseSubPart(self,start,end) :
+        prev = None
+        cur = start
+        future = cur.next
+        while cur.next and cur != end :
+            cur.next = prev
+            prev = cur
+            cur = future
+            future = cur.next
+        cur.next = prev
+        ptr = cur
+        while ptr.next :
+            ptr = ptr.next
+        return cur,ptr
+    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        if head is None or head.next is None or k == 1 :
+            return head
+        start,end = head,head
+        for i in range(k-1) :
+            end = end.next
+        res = end
+        prev = None
+        start,end = head,head
+        while start :
+            for i in range(k-1) :
+                if end is None :
+                    break
+                end = end.next
+            if end is None :
+                break
+            
+            temp = end.next
+            newhead,newend = self.reverseSubPart(start,end)
+            newend.next = temp
+            if prev is not None :
+                prev.next = newhead
+            prev = newend
+            start = end = newend.next    
+        return res;
+
+
+#Leetcode Problem 234. Palindrome Linked List
+
+class Solution {
+public:
+    bool isPalindrome(ListNode* head) {
+       
+         if(head == NULL || head->next == NULL){
+            return (head);
+        }
+        ListNode *r_head = NULL;
+        ListNode *ptr = head;
+        while(ptr!=NULL){
+            ListNode *temp = new ListNode(ptr->val);
+            temp ->next = r_head;
+            r_head = temp;
+            ptr = ptr->next;
+        }
+        while(head && r_head){
+            if(head->val != r_head->val){
+                return false;
+            }
+            head = head->next;
+            r_head = r_head->next;
+        }
+        return true;
+    }
+};
+
+
+#Leetcode Problem 142. Linked List Cycle II
+
+class Solution {
+ public:
+  ListNode* detectCycle(ListNode* head) {
+  
+    ListNode* slow = head;
+    ListNode* fast = head;
+
+   
+    while (fast && fast->next) {
+      slow = slow->next;
+      fast = fast->next->next;
+      if (slow == fast) {
+       
+        slow = head;
+        while (slow != fast) {
+          slow = slow->next;
+          fast = fast->next;
+        }
+        return slow;
+      }
+    }
+    return nullptr;
+  }
+};
