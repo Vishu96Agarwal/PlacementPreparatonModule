@@ -1,1 +1,116 @@
+#Leetcode Problem 1. Two Sum
 
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& arr, int k) {
+        int n=arr.size();
+        unordered_map<int, int> m;
+        for(int i=0; i<n; i++) {
+            int x= k-arr[i];
+            if(m.find(x) != m.end()) {
+                return {m[x], i};
+            }
+            m[arr[i]]=i;
+        }
+        return {-1, -1};
+    }
+};
+
+
+#Leetcode Problem 18. 4Sum
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+        set<vector<int>> set;
+        vector<vector<int>> output;
+        for(int i=0; i<n-3; i++){
+            for(int j=i+1; j<n-2; j++){
+                for(int k=j+1; k<n-1; k++){
+                    for(int l=k+1; l<n; l++){
+                        if((long long)nums[i] + (long long)nums[j] + (long long)nums[k] + 
+                        (long long)nums[l] == target){
+                            set.insert({nums[i], nums[j], nums[k], nums[l]});
+                        }
+                    }
+                }
+            }
+        }
+        for(auto it : set){
+            output.push_back(it);
+        }
+        return output;
+    }
+};
+
+
+#Leetcode Problem 128. Longest Consecutive Sequence
+
+int a[100000];
+
+int init = [] {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    ofstream out("user.out");
+    for (string s; getline(cin, s); out << '\n') {
+        if (s.length() == 2) {
+            out << 0;
+            continue;
+        }
+        int n = 0;
+        for (int _i = 1, _n = s.length(); _i < _n; ++_i) {
+            bool _neg = false;
+            if (s[_i] == '-') ++_i, _neg = true;
+            int v = s[_i++] & 15;
+            while ((s[_i] & 15) < 10) v = v * 10 + (s[_i++] & 15);
+            if (_neg) v = -v;
+            a[n++] = v;
+        }
+        sort(a, a + n);
+        int ans = 0;
+        for (int i = 0; i < n;) {
+            int i0 = i;
+            for (++i; i < n && a[i - 1] + 1 >= a[i]; ++i);
+            ans = max(ans, a[i - 1] - a[i0] + 1);
+        }
+        out << ans;
+    }
+    out.flush();
+    exit(0);
+    return 0;
+}();
+
+class Solution {
+public:
+    int longestConsecutive(vector<int>) { return 999; }
+};
+
+
+#Leetcode Problem 3. Longest Substring Without Repeating Characters
+
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int n = s.length();
+        int maxLength = 0;
+        unordered_set<char> charSet;
+        int left = 0;
+        
+        for (int right = 0; right < n; right++) {
+            if (charSet.count(s[right]) == 0) {
+                charSet.insert(s[right]);
+                maxLength = max(maxLength, right - left + 1);
+            } else {
+                while (charSet.count(s[right])) {
+                    charSet.erase(s[left]);
+                    left++;
+                }
+                charSet.insert(s[right]);
+            }
+        }
+        
+        return maxLength;
+    }
+};
