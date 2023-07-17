@@ -1,1 +1,168 @@
+#Leetcode Problem 61. Rotate List
 
+class Solution {
+public:
+    int getlength(ListNode* head1)
+    {
+        int count=1;
+        while(head1->next!=NULL)
+        {
+            count++;
+            head1=head1->next;
+        }
+        return count;
+    }
+    ListNode* rotateRight(ListNode* head, int k) {
+        if(head==NULL || head->next==NULL)return head;
+        int l=getlength(head);
+        k=k%l;
+    for(int i=1;i<=k;i++)
+    { 
+        ListNode* tail=head;
+        ListNode* tailprev=NULL;
+        while(tail->next!=NULL)
+        {
+            tailprev=tail;
+            tail=tail->next;
+
+        }
+        tail->next=head;
+        tailprev->next=NULL;
+        head=tail;
+    }
+    return head;
+    }
+};
+
+
+#Leetcode Problem 138. Copy List with Random Pointer
+
+class Solution {
+ public:
+  Node* copyRandomList(Node* head) {
+    if (head == nullptr)
+      return nullptr;
+    if (map.count(head))
+      return map[head];
+
+    Node* newNode = new Node(head->val);
+    map[head] = newNode;
+    newNode->next = copyRandomList(head->next);
+    newNode->random = copyRandomList(head->random);
+    return newNode;
+  }
+
+ private:
+  unordered_map<Node*, Node*> map;
+};
+
+
+#Leetcode Problem 15. 3Sum
+
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        int target = 0;
+        sort(nums.begin(), nums.end());
+        set<vector<int>> s;
+        vector<vector<int>> output;
+        for (int i = 0; i < nums.size(); i++){
+            int j = i + 1;
+            int k = nums.size() - 1;
+            while (j < k) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (sum == target) {
+                    s.insert({nums[i], nums[j], nums[k]});
+                    j++;
+                    k--;
+                } else if (sum < target) {
+                    j++;
+                } else {
+                    k--;
+                }
+            }
+        }
+        for(auto triplets : s)
+            output.push_back(triplets);
+        return output;
+    }
+};
+
+
+#Leetcode Problem 42. Trapping Rain Water
+
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n = height.size();
+        int lmax = height[0];
+        int rmax = height[n-1];
+        int lpos = 1;
+        int rpos = n-2;
+        int water = 0;
+        while(lpos <= rpos)
+        {
+            if(height[lpos] >= lmax)
+            {
+                lmax = height[lpos];
+                lpos++;
+            }
+            else if(height[rpos] >= rmax)
+            {
+                rmax = height[rpos];
+                rpos--;
+            }
+            else if(lmax <= rmax && height[lpos] < lmax)
+            {
+                water += lmax - height[lpos];
+                lpos++;
+            }
+            else
+            {
+                water += rmax - height[rpos];
+                rpos--;
+            }
+        
+        }
+        return water;
+    }
+};
+
+
+#Leetcode Problem 26. Remove Duplicates from Sorted Array
+
+class Solution {
+public:
+    int removeDuplicates(vector<int>& nums) {
+
+        int i=0;
+        for(int j=1; j<nums.size(); j++){
+            if(nums[i] != nums[j]){
+                nums[i+1] = nums[j];
+                i++;
+            }
+        }
+        return i+1;      
+    }
+};
+
+
+#Leetcode Problem 485. Max Consecutive Ones
+
+class Solution {
+public:
+    int findMaxConsecutiveOnes(vector<int>& nums) {
+        int res=0,curr=0;
+        int n=nums.size();
+        for(int i=0;i<n;i++){
+            if(nums[i]==0)
+               curr=0;
+            else{
+                curr++;
+                res=max(curr,res);
+            }
+        }
+        return res;
+    }
+};
