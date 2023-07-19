@@ -1,1 +1,150 @@
+#Leetcode Problem 94. Binary Tree Inorder Traversal
 
+class Solution {
+public:
+void inorder(TreeNode*&root,vector<int>&in){
+    if(root == NULL)
+    return;
+    inorder(root->left,in);
+    in.push_back(root->val);
+    inorder(root->right,in);
+}
+    vector<int>inorderTraversal(TreeNode* root) {
+       vector<int>in;
+       inorder(root,in);
+       return in; 
+    }
+};
+
+
+#Leetcode Problem 144. Binary Tree Preorder Traversal
+
+class Solution {
+public:
+void preorder(TreeNode*&root,vector<int>&pre){
+    if(root == NULL)
+    return;
+    pre.push_back(root->val);
+    preorder(root->left,pre);
+    preorder(root->right,pre);
+}
+    vector<int> preorderTraversal(TreeNode* root) {
+       vector<int>pre;
+       preorder(root,pre);
+       return pre; 
+    }
+};
+
+
+#Leetcode Problem 145. Binary Tree Postorder Traversal
+
+class Solution {
+public:
+void postorder(TreeNode*&root,vector<int>&post){
+    if(root == NULL)
+    return;
+    postorder(root->left,post);
+     postorder(root->right,post);
+    post.push_back(root->val);
+   
+}
+    vector<int>postorderTraversal(TreeNode* root) {
+       vector<int>post;
+       postorder(root,post);
+       return post; 
+    }
+};
+
+
+#Leetcode Problem 94. Binary Tree Inorder Traversal
+
+class Solution {
+public:
+void inorder(TreeNode*&root,vector<int>&in){
+    if(root == NULL)
+    return;
+    inorder(root->left,in);
+    in.push_back(root->val);
+    inorder(root->right,in);
+}
+    vector<int>inorderTraversal(TreeNode* root) {
+       vector<int>in;
+       inorder(root,in);
+       return in; 
+    }
+};
+
+
+#Leetcode Problem 987. Vertical Order Traversal of a Binary Tree
+
+class Solution {
+public:
+    map<int,map<int,multiset<int>>>m;
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        vector<vector<int>>a;
+        if(!root)return a;
+        queue<pair<TreeNode*,pair<int,int>>>q;
+        q.push({root,{0,0}});
+        while(q.size()){
+            auto x = q.front();
+            TreeNode* node=x.first;
+            q.pop();
+            int val = x.first->val;
+            int v=x.second.first,l=x.second.second;
+            m[v][l].insert(val);
+            if(node->left){
+                q.push({node->left,{v-1,l+1}});
+            }
+            if(node->right){
+                q.push({node->right,{v+1,l+1}});
+            }
+        }
+        for(auto i : m){
+            vector<int>v;
+            for(auto j:i.second){
+                for(auto g : j.second)
+                v.push_back(g);
+            }
+            a.push_back(v);
+        }
+        return a;
+    }
+};
+
+
+#Leetcode Problem 662. Maximum Width of Binary Tree
+
+#define ll long long int
+class Solution {
+public:
+    int widthOfBinaryTree(TreeNode* root) {
+        queue<pair<TreeNode*,ll>> q;
+        q.push({root,0});
+        int n;
+        pair<TreeNode*,ll> p;
+        ll ans = 1;
+        while(!q.empty()){
+            n = q.size();
+            ll a=0,b,c=q.front().second;
+            for(int i = 0; i < n; i++){
+                p = q.front();
+                q.pop();
+                if(p.first->left){
+                    q.push({p.first->left,(p.second-c)*1LL*2});
+                }
+                if(p.first->right){
+                    q.push({p.first->right,(p.second-c)*1LL*2+1});
+                }
+                
+                if(i==0){
+                    a = (p.second);
+                }
+                if(i==n-1){
+                    b = (p.second);
+                }
+            }
+            ans = max(ans,b-a+1);
+        }
+        return ans;
+    }
+};
