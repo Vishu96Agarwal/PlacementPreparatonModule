@@ -1,1 +1,113 @@
+#Leetcode Problem 116. Populating Next Right Pointers in Each Node
+
+class Solution {
+public:
+    Node* connect(Node* root) {
+        if(root == NULL) return NULL;
+        queue<Node*> q;
+        vector<vector<Node*>> v;
+        q.push(root);
+        int level = 0;
+
+        while(!q.empty()) {
+            int k = q.size();
+            while(k--) {
+                Node* x = q.front();
+                q.pop();
+                if(level >= v.size()) v.push_back({x});
+                else v[level].push_back(x);
+
+                if(x->left != NULL) q.push(x->left);
+                if(x->right != NULL) q.push(x->right);
+            }
+            level++;
+        }
+
+        for(int i = 0; i < v.size(); i++) {
+            for(int j = 0; j < v[i].size(); j++) {
+                if(j == v[i].size()-1) {
+                    v[i][j]->next = NULL;
+                }
+                else {
+                    v[i][j]->next = v[i][j+1];
+                }
+            }
+        }
+        return root;
+    }
+};
+
+
+#Leetcode Problem 700. Search in a Binary Search Tree
+
+class Solution {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        while(root !=NULL && root->val!=val)
+        root = val<root->val?root->left:root->right;
+        return root;
+    }
+};
+
+
+#Leetcode Problem 108. Convert Sorted Array to Binary Search Tree
+
+class Solution {
+public:
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        return helper(nums, 0, nums.size()-1);
+    }
+    TreeNode* helper(vector<int>& nums, int low,int high){
+        if(low<=high){
+            int mid = low + (high-low)/2;
+            TreeNode* root = new TreeNode(nums[mid]);
+            root->left = helper(nums, low, mid-1);
+            root->right = helper(nums, mid+1, high);
+            return root;
+        }
+        return NULL;
+    }
+};
+
+
+#Leetcode Problem 1008. Construct Binary Search Tree from Preorder Traversal
+
+class Solution {
+public:
+    TreeNode* bstFromPreorder(vector<int>& A) {
+        int i=0;
+        return build(A,i,INT_MAX);
+    }
+    TreeNode*build(vector<int>&A, int &i, int bound){
+        if(i==A.size() || A[i]>bound)
+        return NULL;
+        TreeNode* root = new TreeNode(A[i++]);
+        root->left = build(A,i,root->val);
+        root->right=build(A,i,bound);
+        return root;
+    }
+};
+
+
+#Leetcode Problem 98. Validate Binary Search Tree
+
+class Solution {
+public:
+    vector<int> nodes;
+    void inorder(TreeNode* root) {
+        if (root->left) inorder(root->left);
+        nodes.push_back(root->val);
+        if (root->right) inorder(root->right);
+    }
+    bool isValidBST(TreeNode* root) {
+        inorder(root);
+        for (int i = 0; i < nodes.size() - 1; i++) {
+            if (nodes[i] >= nodes[i+1]) return false;
+        }
+        return true;
+    }
+};
+
+
+
 
