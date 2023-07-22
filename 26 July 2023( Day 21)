@@ -1,1 +1,183 @@
+#Leetcode Problem 230. Kth Smallest Element in a BST
 
+class Solution {
+public:
+    vector <int>arr;
+void vec(TreeNode* root){
+
+    if(root==NULL)
+    {
+        return;
+    }
+    arr.push_back(root->val);
+    vec(root->left);
+    vec(root->right);
+}
+
+int kthSmallest(TreeNode* root, int k) {
+    vec(root);
+    sort(arr.begin(), arr.end());
+    return arr[k-1];
+
+    }
+};
+
+
+#Leetcode Problem 653. Two Sum IV - Input is a BST
+
+class Solution {
+    void solve(TreeNode* root, vector<int> & inorder){
+        if(root==NULL)
+            return ;
+            // LNR
+        solve(root->left,inorder);
+        inorder.push_back(root->val);
+        solve(root->right,inorder);
+    }
+public:
+    bool findTarget(TreeNode* root, int k) {
+        vector<int> inorder;
+        solve(root,inorder);
+        int s=0,e=inorder.size()-1;
+        int sum=0;
+        while(s<e)
+        {
+            sum=inorder[s]+inorder[e];
+            if(sum==k)
+                return true;
+            else if (sum>k)
+                e--;
+            else
+                s++;
+        }
+        return false;
+    }
+};
+
+
+#Leetcode Problem 173. Binary Search Tree Iterator
+
+class BSTIterator {
+    stack<TreeNode *> myStack;
+public:
+    BSTIterator(TreeNode *root) {
+        pushAll(root);
+    }
+
+    /** @return whether we have a next smallest number */
+    bool hasNext() {
+        return !myStack.empty();
+    }
+
+    /** @return the next smallest number */
+    int next() {
+        TreeNode *tmpNode = myStack.top();
+        myStack.pop();
+        pushAll(tmpNode->right);
+        return tmpNode->val;
+    }
+
+private:
+    void pushAll(TreeNode *node) {
+        for (; node != NULL; myStack.push(node), node = node->left);
+    }
+};
+
+
+#Leetcode Problem 1373. Maximum Sum BST in Binary Tree
+
+class Solution {
+public:
+
+class info
+{
+    public: 
+    int maxi;
+    int mini;
+    bool isBST;
+    int sum;
+};
+
+info solve(TreeNode* root, int &ans)
+{
+    // base case
+    if(root==NULL)
+    {
+        return {INT_MIN, INT_MAX, true, 0};
+    }
+
+    info left=solve(root->left, ans);
+    info right=solve(root->right, ans);
+
+    info currNode;
+
+    currNode.sum=left.sum + right.sum + root->val;
+    currNode.maxi=max(root->val, right.maxi);
+    currNode.mini=min(root->val, left.mini);
+
+    if(left.isBST && right.isBST && (root->val > left.maxi && root->val < right.mini))
+    {
+        currNode.isBST=true;
+    }
+    else
+    {
+        currNode.isBST=false;
+    }
+
+    // answer update
+    if(currNode.isBST)
+    {
+        ans=max(ans, currNode.sum);
+    }
+
+    return currNode;
+}
+
+    int maxSumBST(TreeNode* root) {
+        
+        int maxSum=0;
+        info temp=solve(root, maxSum);
+        return maxSum;
+    }
+};
+
+
+#Leetcode Problem 297. Serialize and Deserialize Binary Tree
+
+class Codec {
+public:
+
+    string serialize(TreeNode* root) {
+        ostringstream out;
+        serialize(root, out);
+        return out.str();
+    }
+
+    TreeNode* deserialize(string data) {
+        istringstream in(data);
+        return deserialize(in);
+    }
+
+private:
+
+    void serialize(TreeNode* root, ostringstream& out) {
+        if (root) {
+            out << root->val << ' ';
+            serialize(root->left, out);
+            serialize(root->right, out);
+        } else {
+            out << "# ";
+        }
+    }
+
+    TreeNode* deserialize(istringstream& in) {
+        string val;
+        in >> val;
+        if (val == "#")
+            return nullptr;
+        TreeNode* root = new TreeNode(stoi(val));
+        root->left = deserialize(in);
+        root->right = deserialize(in);
+        return root;
+    }
+};
