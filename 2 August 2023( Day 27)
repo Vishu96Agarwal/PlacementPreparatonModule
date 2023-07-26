@@ -1,1 +1,194 @@
+#Leetcode Problem 208. Implement Trie (Prefix Tree)
 
+class TrieNode {
+public:
+    TrieNode *child[26];
+    bool isWord;
+    TrieNode() {
+        isWord = false;
+        for (auto &a : child) a = nullptr;
+    }
+};
+class Trie {
+    TrieNode* root;
+public:
+    Trie() {
+        root = new TrieNode();
+    }
+    void insert(string s) {
+        TrieNode *p = root;
+        for (auto &a : s) {
+            int i = a - 'a';
+            if (!p->child[i]) p->child[i] = new TrieNode();
+            p = p->child[i];
+        }
+        p->isWord = true;
+    }
+    bool search(string key, bool prefix=false) {
+        TrieNode *p = root;
+        for (auto &a : key) {
+            int i = a - 'a';
+            if (!p->child[i]) return false;
+            p = p->child[i];
+        }
+        if (prefix==false) return p->isWord;
+        return true;
+    }
+    bool startsWith(string prefix) {
+        return search(prefix, true);
+    }
+};
+
+
+#Leetcode Problem 421. Maximum XOR of Two Numbers in an Array
+
+class Solution {
+public:
+    struct TrieNode {
+        //trie with max 2 child, not taking any bool or 26 size value because no need
+        TrieNode* one;
+        TrieNode* zero;
+    };
+    void insert(TrieNode* root, int n) {
+        TrieNode* curr = root;
+        for (int i = 31; i >= 0; i--) {
+            int bit = (n >> i) & 1;
+            if (bit == 0) {
+                if (curr->zero == nullptr) {   
+                    TrieNode* newNode = new TrieNode();    
+                    curr->zero = newNode;  
+                }
+                curr = curr->zero;   //increase cur to next zero position
+            }
+            else {
+                //similarly if we get 1 
+                if (curr->one == nullptr) {
+                    TrieNode* newNode = new TrieNode();
+                    curr->one = newNode;
+                }
+                curr = curr->one;
+            }
+        }
+    }
+     int findmax(TrieNode* root, int n) {
+        TrieNode* curr = root;
+        int ans = 0;
+        for (int i = 31; i >= 0; i--) {
+            int bit = (n >> i) & 1;
+            if (bit == 1) {
+                if (curr->zero != nullptr) {  
+                    ans += (1 << i);
+                    curr = curr->zero;
+                }
+                else {
+                    curr = curr->one; 
+                }
+            }
+            else {
+                //similarly on zero side if we get 0 then we will check on 1 s side
+                if (curr->one != nullptr) {   
+                    ans += (1 << i);
+                    curr = curr->one;
+                }
+                else {
+                    curr = curr->zero;
+                }
+            }
+        }
+        return ans;
+    }
+
+    int findMaximumXOR(vector<int>& nums) {
+        int n = nums.size();
+        TrieNode* root = new TrieNode();
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            insert(root, nums[i]);    
+        }
+        for (int i = 1; i < n; i++) {
+            ans = max(ans, findmax(root, nums[i]));        }
+        return ans;
+    }
+};
+
+
+#Leetcode Problem 1707. Maximum XOR With an Element From Array
+
+class Node{
+public:
+    Node* links[2];
+    int mini[2];
+    
+    Node(){
+        links[0]=NULL,links[1]=NULL;
+        mini[0]=INT_MAX,mini[1]=INT_MAX;
+    }
+    bool containsKey(int i){
+        return links[i]!=NULL;
+    }
+    void put(int i, Node* node){
+        links[i]=node;
+    }
+    Node* get(int i){
+        return links[i];
+    }
+    void putMin(int bit, int x){
+        mini[bit]=min(mini[bit],x);
+    }
+    int getMin(int bit){
+        return mini[bit];
+    }
+};
+class Solution {
+public:
+    Node* root;
+    void insert(int x)
+    {
+        Node* curr=root;
+        int k=32;
+        while(k--)
+        {
+            int bit=((x>>k)&1);
+            if(!curr->containsKey(bit))
+                curr->put(bit,new Node());
+            curr->putMin(bit,x);
+            curr=curr->get(bit);
+        }
+    }
+    int searchMaxXOR(int x, int m)
+    {
+        Node* curr=root;
+        int ans=0,k=32;
+        while(k--)
+        {
+            ans=ans*2;
+            
+            int bit=((x>>k)&1);
+            if(curr->containsKey(1-bit) && curr->getMin(1-bit)<=m)
+            {
+                curr=curr->get(1-bit);
+                ans++;
+            }
+            else
+                curr=curr->get(bit);
+        }
+        return ans;
+    }
+    vector<int> maximizeXor(vector<int>& v, vector<vector<int>>& q) {
+        int n=v.size();
+        root=new Node();
+        for(int i=0;i<n;i++)
+            insert(v[i]);
+        int minEle=*min_element(v.begin(),v.end());
+        vector<int> ans;
+        for(int i=0;i<q.size();i++)
+        {
+            int x=q[i][0],m=q[i][1];
+            if(minEle<=m)
+                ans.push_back(searchMaxXOR(x,m));
+            else
+                ans.push_back(-1);
+        }
+        return ans;
+    }
+};
