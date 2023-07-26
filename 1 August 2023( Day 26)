@@ -1,1 +1,119 @@
+#Leetcode Problem 64. Minimum Path Sum
+
+class Solution {
+public:
+int solve(int i,int j,vector<vector<int>>& grid,vector<vector<int>> &dp){
+    int n=grid.size();
+    int m=grid[0].size();
+    if(i==n-1 && j==m-1){
+        return grid[i][j];
+
+    }
+    if(dp[i][j]!=-1) return dp[i][j];
+    int r=INT_MAX;
+    int d=INT_MAX;
+    if(i+1<n ){
+        d=solve(i+1,j,grid,dp);
+    }
+    if(j+1<m) r=solve(i,j+1,grid,dp);
+   
+    return dp[i][j]=grid[i][j]+min(r,d);
+
+}
+    int minPathSum(vector<vector<int>>& grid) {
+         int n=grid.size();
+    int m=grid[0].size();
+        vector<vector<int>> dp(n+1,vector<int>(m+1,-1));
+        return solve(0,0,grid,dp);
+    }
+};
+
+
+#Leetcode Problem 416. Partition Equal Subset Sum
+
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        int sum = accumulate(nums.begin(), nums.end(), 0);
+
+        if(sum%2 !=0 ) return false;
+
+        int n = nums.size();
+        sum = sum/2;
+        bool possible[n+1][sum+1];
+        for(int i=1; i<=sum; i++) possible[0][i] = false;
+        for(int i=0; i<=n; i++) possible[i][0] = true;
+
+        for(int i=1; i<=n; i++){
+            for(int j=1; j<=sum; j++){
+                if(nums[i-1] > j) possible[i][j] = possible[i-1][j];
+                else possible[i][j] = possible[i-1][j-nums[i-1]] || possible[i-1][j];
+            }
+        }
+        return possible[n][sum];
+    }
+};
+
+
+#Leetcode Problem 1547. Minimum Cost to Cut a Stick
+
+class Solution {
+public:
+    int minCost(int n, std::vector<int>& cuts) {
+        std::sort(cuts.begin(), cuts.end());
+        int m = cuts.size();
+        std::vector<std::vector<int>> dp(m + 2, std::vector<int>(m + 2, 0));
+
+        for (int l = 2; l <= m + 1; l++) {
+            for (int i = 0; i + l <= m + 1; i++) {
+                int j = i + l;
+                dp[i][j] = INT_MAX;
+                for (int k = i + 1; k < j; k++) {
+                    dp[i][j] = std::min(dp[i][j], dp[i][k] + dp[k][j]);
+                }
+                int left = (i == 0) ? 0 : cuts[i - 1];
+                int right = (j == m + 1) ? n : cuts[j - 1];
+                dp[i][j] += right - left;
+            }
+        }
+
+        return dp[0][m + 1];
+    }
+};
+
+
+#Leetcode Problem 139. Word Break
+
+class Solution {
+ public:
+  bool wordBreak(string s, vector<string>& wordDict) {
+    const int n = s.length();
+    const int maxLength = getMaxLength(wordDict);
+    const unordered_set<string> wordSet{begin(wordDict), end(wordDict)};
+    vector<int> dp(n + 1);
+    dp[0] = true;
+
+    for (int i = 1; i <= n; ++i)
+      for (int j = i - 1; j >= 0; --j) {
+        if (i - j > maxLength)
+          break;
+        if (dp[j] && wordSet.count(s.substr(j, i - j))) {
+          dp[i] = true;
+          break;
+        }
+      }
+
+    return dp[n];
+  }
+
+ private:
+  int getMaxLength(const vector<string>& wordDict) {
+    return max_element(begin(wordDict), end(wordDict),
+                       [](const auto& a, const auto& b) {
+                         return a.length() < b.length();
+                       })
+        ->length();
+  }
+};
+
 
